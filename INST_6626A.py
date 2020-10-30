@@ -41,5 +41,18 @@ class INST_6626A:
             raise Exception("Current \"{}\" is not valid. Max current for channels 1 and 2 is 2.060A".format(current))           
         self.inst.write("IRSET {:d},{:0.6f}".format(channel, current))
         self.inst.write("ISET {:d},{:0.6f}".format(channel, current))
+
+    def getVoltage(self, channel):
+        if channel < 1 or channel > 4:
+            raise Exception("Channel {} is not valid. Channel must be 1-4.".format(channel))
+        return float(self.inst.query("VOUT? {:d}".format(channel)))
+
+    def getCurrent(self, channel):
+        if channel < 1 or channel > 4:
+            raise Exception("Channel {} is not valid. Channel must be 1-4.".format(channel))
+        return float(self.inst.query("IOUT? {:d}".format(channel)))
     
-        
+    def getPower(self, channel):
+        if channel < 1 or channel > 4:
+            raise Exception("Channel {} is not valid. Channel must be 1-4.".format(channel))
+        return float(self.inst.query("IOUT? {:d}".format(channel)))*float(self.inst.query("VOUT? {:d}".format(channel)))
