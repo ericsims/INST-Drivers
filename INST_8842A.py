@@ -10,10 +10,33 @@ class INST_8842A:
         self.inst.write("*IDN?")
         return self.inst.read()
 
-    def getVoltage(self):
+    def getVoltage(self, speed='MEDIUM'):
         self.inst.write('F1')
         self.inst.write('R0')
-        self.inst.write('S1')
+        if speed.upper() == 'SLOW':
+            self.inst.write('S0')
+        elif speed.upper() == 'MEDIUM':
+            self.inst.write('S1')
+        elif speed.upper() == 'FAST':
+            self.inst.write('S2')
+        else:
+            raise Exception("Measurement speed \"{}\" is not valid. Acceptable speeds are SLOW, MEDIUM, or FAST.".format(speed))   
+        
+        return float(self.inst.read())
+
+    
+    def getCurrent(self, speed='MEDIUM'):
+        self.inst.write('F5')
+        self.inst.write('R0')
+        if speed.upper() == 'SLOW':
+            self.inst.write('S0')
+        elif speed.upper() == 'MEDIUM':
+            self.inst.write('S1')
+        elif speed.upper() == 'FAST':
+            self.inst.write('S2')
+        else:
+            raise Exception("Measurement speed \"{}\" is not valid. Acceptable speeds are SLOW, MEDIUM, or FAST.".format(speed))   
+        
         return float(self.inst.read())
     
         
