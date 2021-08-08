@@ -4,7 +4,8 @@ class INST_8842A:
     def __init__(self, Addr):
         self.ADDR = Addr
         self.visa_rm = pyvisa.ResourceManager()
-        self.inst = self.visa_rm.open_resource('GPIB0::'+str(self.ADDR)+'::INSTR')
+        self.inst = self.visa_rm.open_resource('GPIB0::'+str(self.ADDR)+'::INSTR', write_termination='\r\n', read_termination='\r\n')
+        self.inst.control_ren(1)
 
     def identify(self):
         self.inst.write("*IDN?")
