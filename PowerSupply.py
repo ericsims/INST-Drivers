@@ -6,6 +6,7 @@ from Instrument import *
 class PowerSupply():
 
     def __init__(self):
+        # TODO: capabilites doesn't address differen V/I ranges. For example the 6626A can do up to 50V and 2A, but has a max power of 50W and CANNOT do 40V@1A due to discrete voltage ranges
         self.capabilites = {
             'voltage_control': False,
             'current_control': False,

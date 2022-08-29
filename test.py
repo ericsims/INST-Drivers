@@ -1,13 +1,13 @@
-from contextlib import suppress
-from time import sleep
+import pyvisa
+
 from HP_6626A_VISA import *
         
 
 visa_rm = pyvisa.ResourceManager()
 
-phy_sup1 = HP_6626A_VISA(visa_rm, f"GPIB0::{3}::INSTR")
+phy_sup1 = HP_6626A_VISA(visa_rm.open_resource(f"GPIB0::{3}::INSTR"))
 
-psu = phy_sup1.ch3
+psu = phy_sup1.ch1
 
 def safe_hw():
     print("Safeing HW...")

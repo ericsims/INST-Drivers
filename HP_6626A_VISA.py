@@ -100,9 +100,8 @@ class _HP_6626A_VISA_Channel(PowerSupply):
 
 
 class HP_6626A_VISA():
-    def __init__(self, visa_rm, visa_address_str):
-        self.visa_rm = visa_rm
-        self.visa_inst = self.visa_rm.open_resource(visa_address_str)
+    def __init__(self, visa_inst):
+        self.visa_inst = visa_inst
         
         self.ch1=_HP_6626A_VISA_Channel(self.visa_inst, 1)
         self.ch1.capabilites['voltage_control']     = True
