@@ -1,4 +1,5 @@
 import math, time, warnings
+from enum import Enum
 import numpy as np
 from Instrument import *
 
@@ -42,7 +43,7 @@ class PowerSupply():
         if not implemented:
             raise NotImplementedError
 
-    def getState(self, state, implemented=False):
+    def getState(self, implemented=False):
         if not implemented:
             raise NotImplementedError
 
@@ -112,6 +113,9 @@ class PowerSupply():
         if not implemented:
             raise NotImplementedError
 
+    def getStatus(self, implemented=False):
+        if not implemented:
+            raise NotImplementedError
 
 
 
@@ -156,3 +160,11 @@ class PowerSupply():
                 pass
 
         self.setVoltage(endVoltage)
+
+class psu_mode(Enum):
+    OFF = 0
+    CV = 1
+    CC = 2
+    OVP = 3
+    OCP = 4
+    FAULT = 5

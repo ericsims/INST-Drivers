@@ -1,7 +1,7 @@
 import math
 import pyvisa
 
-from PowerSupply import PowerSupply 
+from PowerSupply import PowerSupply, psu_mode 
 from Instrument import *
 
 
@@ -74,6 +74,19 @@ class _HP_6626A_VISA_Channel(PowerSupply):
         super().getPower(implemented=True)
         return float(self.getVoltage()*self.getCurrent())
 
+    def getStatus(self):
+        super().getStatus(implemented=True)
+        stat = int(self.visa_inst.query(f"STS? {self.channel}"))
+        if stat ==  0:
+            return psu_mode.OFF
+        elif stat == 1:
+            return psu_mode.CV
+        elif stat == 2:
+            return psu_mode.CC
+        else:
+            return psu_mode.FAULT
+
+
 class HP_6626A_VISA():
     def __init__(self, visa_rm, visa_address_str):
         self.visa_rm = visa_rm
@@ -116,5 +129,4 @@ class HP_6626A_VISA():
         self.ch4.capabilites['max_power']           = 50.5*2.060
 
     def identify(self):
-        self.visa_inst.write("ID?")
-        return self.visa_inst.read().strip()
+        return self.visa_inst.query("ID?").strip()
