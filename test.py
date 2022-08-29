@@ -7,10 +7,10 @@ visa_rm = pyvisa.ResourceManager()
 
 phy_sup1 = HP_6626A_VISA(visa_rm, f"GPIB0::{3}::INSTR")
 
-psu = phy_sup1.ch1
+psu = phy_sup1.ch3
 
 def safe_hw():
-    print("Safeing HW!")
+    print("Safeing HW...")
     psu.setState(False)
 
 print(f"Supply at '{phy_sup1.visa_inst}' is '{phy_sup1.identify()}'")
@@ -25,25 +25,26 @@ psu.soft_voltage_range=[0,10]
 psu.soft_current_range=[0,0.1]
 
 try:
+    # init supply of and at 0V/0A
     psu.setState(0)
-    psu.setVoltage(10)
+    psu.setVoltage(0)
+    psu.setCurrent(0)
+
+    psu.setVoltage(1)
     psu.setCurrent(.1)
     psu.setState(1)
 
-    print(f"Voltage set point: {psu.getVoltageSetpoint()}")
-    print(f"Current set point: {psu.getCurrentSetpoint()}")
+    print(f"Voltage set point: {psu.getVoltageSetpoint()}V")
+    print(f"Current set point: {psu.getCurrentSetpoint()}A")
     print(f"Actual Voltage: {psu.getVoltage():0.3f}V")
-    print(f"Actual Current: {psu.getCurrent()*1000:0.1f}mA")
-    print(f"Actual Power: {psu.getPower()*1000.0:0.1f}mW")
+    print(f"Actual Current: {psu.getCurrent()*1000:0.2f}mA")
+    print(f"Actual Power: {psu.getPower()*1000.0:0.2f}mW")
 
-    assert(psu.getStatus() == psu_mode.CV)
-
-    sleep(2)
-
+    if (psu.getStatus() != psu_mode.CV): raise Exception(f"Supply is not in CV mode, but instead is in {psu.getStatus()}. Is it current limiting or faulted?")
 
     psu.setState(False)
 except Exception as e:
-    print("EXCEPTION!!")
+    print("EXCEPTION!")
     safe_hw()
     raise(e)
 

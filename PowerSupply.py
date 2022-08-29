@@ -33,6 +33,10 @@ class PowerSupply():
         if not implemented:
             raise NotImplementedError
 
+    def reset(self, implemented=False):
+        if not implemented:
+            raise NotImplementedError
+
     def setState(self, state, implemented=False):
         if type(state)!=bool:
             if type(state) == int:
@@ -51,9 +55,13 @@ class PowerSupply():
         if not self.capabilites['voltage_control']:
              raise ExceededInstrumentCapabilitesError("Voltage control not supported")
         if voltage < self.capabilites['min_voltage'] or voltage > self.capabilites['max_voltage']:
-            raise ExceededInstrumentCapabilitesError(f"Voltage setpoint of {voltage} is out of supply limits of {self.capabilites['min_voltage']} to {self.capabilites['max_voltage']}")
+            raise ExceededInstrumentCapabilitesError(f"Voltage setpoint of {voltage}V is out of supply limits of {self.capabilites['min_voltage']}V to {self.capabilites['max_voltage']}V")
         if voltage < self.soft_voltage_range[0] or voltage > self.soft_voltage_range[1]:
-            raise ExceededInstrumentSoftLimitError(f"Voltage setpoint of {voltage} is out soft voltage limits of {self.soft_voltage_range[0]} to {self.soft_voltage_range[1]}")
+            raise ExceededInstrumentSoftLimitError(f"Voltage setpoint of {voltage}V is out soft voltage limits of {self.soft_voltage_range[0]}V to {self.soft_voltage_range[1]}V")
+        I = self.getCurrentSetpoint()
+        if voltage*I > self.capabilites['max_power']:
+            raise ExceededInstrumentCapabilitesError(f"Voltage setpoint of {voltage}V at a current setpoint of {I}A is too high for the rated power of {self.capabilites['max_power']}W")
+        # TODO: check that voltage set point is within negative power limit
         if not implemented:
             raise NotImplementedError
 
@@ -69,9 +77,13 @@ class PowerSupply():
         if not self.capabilites['current_control']:
              raise ExceededInstrumentCapabilitesError("Current control not supported")
         if current < self.capabilites['min_current'] or current > self.capabilites['max_current']:
-            raise ExceededInstrumentCapabilitesError(f"Current setpoint of {current} is out of supply limits of {self.capabilites['min_current']} to {self.capabilites['max_current']}")
+            raise ExceededInstrumentCapabilitesError(f"Current setpoint of {current}A is out of supply limits of {self.capabilites['min_current']}A to {self.capabilites['max_current']}A")
         if current < self.soft_current_range[0] or current > self.soft_current_range[1]:
-            raise ExceededInstrumentSoftLimitError(f"Current setpoint of {current} is out soft current limits of {self.soft_current_range[0]} to {self.soft_current_range[1]}")
+            raise ExceededInstrumentSoftLimitError(f"Current setpoint of {current}A is out soft current limits of {self.soft_current_range[0]}A to {self.soft_current_range[1]}A")
+        V = self.getVoltageSetpoint()
+        if current*V > self.capabilites['max_power']:
+            raise ExceededInstrumentCapabilitesError(f"Current setpoint of {current}A at a voltage setpoint of {V}V is too high for the rated power of {self.capabilites['max_power']}W")
+        # TODO: check that voltage set point is within negative power limit
         if not implemented:
             raise NotImplementedError
 
@@ -87,9 +99,9 @@ class PowerSupply():
         if not self.capabilites['power_control']:
              raise ExceededInstrumentCapabilitesError("Power control not supported")
         if power < self.capabilites['min_power'] or power > self.capabilites['max_power']:
-            raise ExceededInstrumentCapabilitesError(f"Power setpoint of {power} is out of supply limits of {self.capabilites['min_power']} to {self.capabilites['max_power']}")
+            raise ExceededInstrumentCapabilitesError(f"Power setpoint of {power}W is out of supply limits of {self.capabilites['min_power']}W to {self.capabilites['max_power']}W")
         if power < self.soft_power_range[0] or power > self.soft_power_range[1]:
-            raise ExceededInstrumentSoftLimitError(f"Power setpoint of {power} is out soft power limits of {self.soft_power_range[0]} to {self.soft_power_range[1]}")
+            raise ExceededInstrumentSoftLimitError(f"Power setpoint of {power}W is out soft power limits of {self.soft_power_range[0]}W to {self.soft_power_range[1]}W")
         if not implemented:
             raise NotImplementedError
       
